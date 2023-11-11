@@ -30,6 +30,7 @@ async function run() {
 
 
     const jobsCollection = client.db("jobDraftDB").collection("jobs");
+    const applyedJobsCollection = client.db("jobDraftDB").collection("applyedJobs");
 
 
     app.get("/jobs", async (req, res) => {
@@ -43,6 +44,13 @@ async function run() {
       const result = await jobsCollection.find(filter).toArray()
       res.send(result)
     })
+    app.get("/usersjobs", async (req, res) => {
+      const email = req.query.email
+      console.log(email);
+      const filter = { creator_email: email }
+      const result = await jobsCollection.find(filter).toArray()
+      res.send(result)
+    })
     app.get("/jobsdetails/:id", async (req, res) => {
       const id = req.params.id
       // console.log(id);
@@ -51,11 +59,20 @@ async function run() {
       const result = await jobsCollection.findOne(filter)
       res.send(result)
     })
+    app.get("/appliedjobs",async(req,res) => {
+      
+    })
 
     app.post("/jobspost", async (req, res) => {
       const newJob = req.body
       // console.log(newJob);
       const result = await jobsCollection.insertOne(newJob)
+      res.send(result)
+    })
+    app.post("/applyedjobs", async (req, res) => {
+      const applyJob = req.body
+      // console.log(newJob);
+      const result = await applyedJobsCollection.insertOne(applyJob)
       res.send(result)
     })
 
