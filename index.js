@@ -37,6 +37,7 @@ async function run() {
       const result = await jobsCollection.find().toArray()
       res.send(result)
     })
+
     app.get("/jobs/:ctgname", async (req, res) => {
       const category = req.params.ctgname
       // console.log(category);
@@ -44,13 +45,23 @@ async function run() {
       const result = await jobsCollection.find(filter).toArray()
       res.send(result)
     })
+
+    app.get("/jobssearch/:title", async (req, res) => {
+      const title = req.params.title
+      console.log(title);
+      const filter = { job_title: title }
+      const result = await jobsCollection.find(filter).toArray()
+      res.send(result)
+    })
+
     app.get("/usersjobs", async (req, res) => {
       const email = req.query.email
-      console.log(email);
+      // console.log(email);
       const filter = { creator_email: email }
       const result = await jobsCollection.find(filter).toArray()
       res.send(result)
     })
+
     app.get("/jobsdetails/:id", async (req, res) => {
       const id = req.params.id
       // console.log(id);
@@ -59,8 +70,22 @@ async function run() {
       const result = await jobsCollection.findOne(filter)
       res.send(result)
     })
+
     app.get("/appliedjobs",async(req,res) => {
-      
+      const useremail = req.query.email
+      // console.log(useremail);
+      const filter = {email : useremail}
+      const result = await applyedJobsCollection.find(filter).toArray()
+      res.send(result)
+    })
+
+    app.get("/appliedjobsctg",async(req,res) => {
+      const useremail = req.query.email
+      const categoryname = req.query.ctg
+      // console.log(useremail,categoryname);
+      const filter = {email : useremail, category: categoryname}
+      const result = await applyedJobsCollection.find(filter).toArray()
+      res.send(result)
     })
 
     app.post("/jobspost", async (req, res) => {
