@@ -21,14 +21,14 @@ app.use(cookieParser())
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token
   // console.log(token);
-  if(!token){
-    return res.status(401).send({message: "unauthrized access"})
+  if (!token) {
+    return res.status(401).send({ message: "unauthrized access" })
   }
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error,decoded) => {
-    if(error){
-      return res.status(401).send({message: "unauthrized access"})
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
+    if (error) {
+      return res.status(401).send({ message: "unauthrized access" })
     }
-    req.user= decoded
+    req.user = decoded
     next()
   })
 }
@@ -58,22 +58,22 @@ async function run() {
 
 
     // auth api
-    app.post("/jwt", async(req, res) => {
+    app.post("/jwt", async (req, res) => {
       const user = req.body;
       // console.log(user);
-      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET , {expiresIn: "2h"})
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "2h" })
       res.cookie('token', token, {
         httpOnly: true,
         secure: true,
         sameSite: "none"
       })
-      .send({success: true})
+        .send({ success: true })
     })
 
     app.post("/logout", async (req, res) => {
       const user = req.body;
       // console.log("logout user" , user);
-      res.clearCookie('token',{maxAge: 0}).send({success: true})
+      res.clearCookie('token', { maxAge: 0 }).send({ success: true })
     })
 
 
@@ -120,19 +120,19 @@ async function run() {
       res.send(result)
     })
 
-    app.get("/appliedjobs",async(req,res) => {
+    app.get("/appliedjobs",verifyToken, async (req, res) => {
       const useremail = req.query.email
       // console.log(useremail);
-      const filter = {email : useremail}
+      const filter = { email: useremail }
       const result = await applyedJobsCollection.find(filter).toArray()
       res.send(result)
     })
 
-    app.get("/appliedjobsctg",async(req,res) => {
+    app.get("/appliedjobsctg", async (req, res) => {
       const useremail = req.query.email
       const categoryname = req.query.ctg
       // console.log(useremail,categoryname);
-      const filter = {email : useremail, category: categoryname}
+      const filter = { email: useremail, category: categoryname }
       const result = await applyedJobsCollection.find(filter).toArray()
       res.send(result)
     })
@@ -178,7 +178,7 @@ async function run() {
     app.delete("/myjobdelete/:id", async (req, res) => {
       const id = req.params.id
       console.log(id);
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await jobsCollection.deleteOne(query)
       res.send(result)
     })
