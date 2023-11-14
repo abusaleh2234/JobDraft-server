@@ -10,7 +10,9 @@ const port = process.env.PORT || 5000
 
 app.use(cors({
   origin: [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://job-draft-deb43.web.app",
+    "https://job-draft-deb43.firebaseapp.com",  
   ],
   credentials: true
 }))
@@ -105,7 +107,7 @@ async function run() {
     app.get("/usersjobs", verifyToken, async (req, res) => {
       const email = req.query.email
       // console.log(email);
-      console.log(req.cookies);
+      // console.log(req.cookies);
       const filter = { creator_email: email }
       const result = await jobsCollection.find(filter).toArray()
       res.send(result)
@@ -120,7 +122,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get("/appliedjobs",verifyToken, async (req, res) => {
+    app.get("/appliedjobs", async (req, res) => {  //verifyToken,
       const useremail = req.query.email
       // console.log(useremail);
       const filter = { email: useremail }
